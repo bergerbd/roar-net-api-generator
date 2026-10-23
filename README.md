@@ -33,7 +33,9 @@ Requires Node.js 24 (enforced by pnpm via `devEngines`) and pnpm 12; the devcont
 
 Every user-facing change comes with a changeset (`pnpm changeset`). On `main`, the release workflow collects
 pending changesets into a "Version Packages" pull request; merging it bumps the version, updates the changelog
-and publishes the extension to the VS Code Marketplace (secret `VSCE_PAT`). Nothing is published to npm.
+and publishes the extension to the VS Code Marketplace. Publishing signs in with Microsoft Entra ID through a
+federated credential (environment `marketplace-publish`, secrets `AZURE_CLIENT_ID` and `AZURE_TENANT_ID`), no
+PAT. Nothing is published to npm.
 
 ## Acknowledgement
 

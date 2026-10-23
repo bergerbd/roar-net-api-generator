@@ -78,7 +78,7 @@
     "test:integration": "pnpm run build && pnpm run compile-tests && node ./out-test/test/integration/runTest.js",
     "vscode:prepublish": "node esbuild.js --production",
     "package": "vsce package --no-dependencies",
-    "release": "vsce publish --no-dependencies --skip-duplicate",
+    "release": "vsce publish --no-dependencies --skip-duplicate --azure-credential",
     "verify": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test:unit",
     "generate-models": "typemf-generate models/mapping.typemf-generator.config.json && typemf-generate models/variability.typemf-generator.config.json"
   },

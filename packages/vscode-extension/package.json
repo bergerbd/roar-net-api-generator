@@ -2,7 +2,7 @@
   "name": "roar-net-api-generator",
   "displayName": "ROAR-NET API Generator",
   "description": "Generator for the ROAR-NET API",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "bergerbd",
   "preview": true,
   "icon": "images/icon.png",

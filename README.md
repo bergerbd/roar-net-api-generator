@@ -10,8 +10,6 @@ extension; templates are written in [Nunjucks](https://mozilla.github.io/nunjuck
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `packages/vscode-extension/` | The VS Code extension (generator core, project-config editor). [README](packages/vscode-extension/README.md) (Marketplace page), [DEVELOPMENT](packages/vscode-extension/DEVELOPMENT.md). |
 | `playground/`                | Example project and workspace of the Extension Development Host: example inputs, the ROAR-NET templates (`templates/`) and their output (`generated/`, not tracked).                      |
-| `agents/`                    | Notes and protocols of coding agents; [`agents/AGENTS.md`](agents/AGENTS.md) holds the instructions for them.                                                                             |
-| `legacy/`                    | The original FreeMarker templates, kept for reference until the Nunjucks port is accepted.                                                                                                |
 | `.changeset/`                | Pending [changesets](https://changesets.dev) (version bumps and changelog entries).                                                                                                       |
 
 ## Getting started

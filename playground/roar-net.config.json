@@ -1,0 +1,20 @@
+{
+    "api-model": "roar-net-api.ecore",
+    "variability-model": "roar-net-variability.uvl",
+    "mapping-model": "variability-mapping.json",
+    "templates": [
+        {
+            "template": "markdown",
+            "folder": "templates/markdown",
+            "options": {}
+        },
+        {
+            "template": "java",
+            "folder": "templates/java",
+            "options": {
+                "base-package": "roar_net"
+            }
+        }
+    ],
+    "output-folder": "generated"
+}

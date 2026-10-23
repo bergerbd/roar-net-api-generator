@@ -1,0 +1,180 @@
+{#-
+  Java API: one interface per class of the API model, port of
+  legacy/freemarker-templates/java/api/main.ftl.
+
+  Every operation becomes a default method that throws:
+    - NotImplementedException        if the problem provides one of the operation's
+                                     features (or the operation belongs to no feature):
+                                     the method has to be implemented;
+    - UnsupportedOperationException  otherwise: the method need not be implemented.
+  The problem declares its features via getFeatures() (feature names as strings).
+
+  Generated support code, unimplemented for now: NotImplementedException,
+  Problem.getFeatures(), and getProblem() in classes that need it but whose
+  model has no such operation.
+
+  Options: "base-package" (required), e.g. "roar_net".
+-#}
+
+{%- set basePackage = options["base-package"] -%}
+{%- set packagePath = basePackage | replace(".", "/") -%}
+{#- The class that represents the problem instance and declares its features. -#}
+{%- set problemClass = "Problem" -%}
+
+{#- ------------------------------------------------------------------ types -#}
+
+{%- set primitives = {
+  "EDouble": "double", "EFloat": "float", "EInt": "int", "ELong": "long",
+  "EShort": "short", "EByte": "byte", "EChar": "char", "EBoolean": "boolean",
+  "EString": "String"
+} -%}
+{%- set boxed = {
+  "double": "Double", "float": "Float", "int": "Integer", "long": "Long",
+  "short": "Short", "byte": "Byte", "char": "Character", "boolean": "Boolean"
+} -%}
+
+{%- macro typeName(type, generic) -%}
+{%- set name = primitives[type.getName()] or type.getName() -%}
+{{ (boxed[name] or name) if generic else name }}
+{%- endmacro -%}
+
+{#- void, T (1..1), Optional<T> (0..1) or Stream<T> (many) -#}
+{%- macro typeOf(typed) -%}
+{%- if not typed.getEType() -%}void
+{%- elif typed.getUpperBound() == 1 and typed.getLowerBound() == 0 -%}Optional<{{ typeName(typed.getEType(), true) }}>
+{%- elif typed.getUpperBound() == 1 -%}{{ typeName(typed.getEType(), false) }}
+{%- else -%}Stream<{{ typeName(typed.getEType(), true) }}>
+{%- endif -%}
+{%- endmacro -%}
+
+{#- --------------------------------------------------------------- javadoc -#}
+
+{#- Model documentation as Javadoc: "## X" becomes <h2>X</h2>, empty lines
+    become <p>; everything else (including HTML) is kept. -#}
+{%- macro javadoc(element, indent, note) -%}
+{%- set lines = [] -%}
+{%- set text = (documentation(element) or "") | replace(r/^\*\r?\n/, "") | replace("*/", "*&#47;") | trim -%}
+{%- if text -%}
+  {%- for line in text.split("\n") -%}
+    {%- if line.trim().startsWith("## ") %}{% set _ = lines.push("<h2>" + line.trim().substring(3) + "</h2>") -%}
+    {%- elif line.trim() == "" %}{% set _ = lines.push("<p>") -%}
+    {%- else %}{% set _ = lines.push(line) -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if note %}{% if lines.length %}{% set _ = lines.push("<p>") %}{% endif %}{% set _ = lines.push(note) %}{% endif -%}
+{%- if lines.length -%}
+{{ indent }}/**
+{% for line in lines %}{{ indent }} *{{ (" " + line) if line else "" }}
+{% endfor %}{{ indent }} */
+{% endif -%}
+{%- endmacro -%}
+
+{%- macro featureNote(op) -%}
+{%- if featuresOf(op).length > 0 -%}
+Feature{{ "s" if featuresOf(op).length > 1 }}: {% for f in featuresOf(op) %}{{ f.getName() }}{{ ", " if not loop.last }}{% endfor %}
+{%- else -%}
+Provided by every implementation.
+{%- endif -%}
+{%- endmacro -%}
+
+{#- ------------------------------------------------------------ operations -#}
+
+{%- macro problemOf(c) -%}
+{{ "this" if c.getName() == problemClass else "getProblem()" }}
+{%- endmacro -%}
+
+{%- macro operation(c, op) -%}
+{{ javadoc(op, "    ", featureNote(op)) }}    public default {{ typeOf(op) }} {{ op.getName() }}(
+{%- for p in op.getEParameters() %}final {{ typeOf(p) }} {{ p.getName() }}{{ ", " if not loop.last }}{% endfor -%}
+) {
+{%- if featuresOf(op).length > 0 %}
+        if ({% for f in featuresOf(op) %}{{ problemOf(c) }}.getFeatures().contains("{{ f.getName() }}"){% if not loop.last %}
+                || {% endif %}{% endfor %}) {
+            throw new NotImplementedException("This function should be supported by this problem instance, but is not yet implemented.");
+        } else {
+            throw new UnsupportedOperationException("This function is not supported by this problem instance.");
+        }
+{%- else %}
+        throw new NotImplementedException("This function is not yet implemented.");
+{%- endif %}
+    }
+{%- endmacro -%}
+
+{#- Whether any typed element of the class needs Optional / Stream. -#}
+{%- macro uses(c, kind) -%}
+{%- set found = [] -%}
+{%- for op in c.getEOperations() -%}
+  {%- if (typeOf(op) | string).startsWith(kind + "<") %}{% set _ = found.push(op) %}{% endif -%}
+  {%- for p in op.getEParameters() -%}
+    {%- if (typeOf(p) | string).startsWith(kind + "<") %}{% set _ = found.push(p) %}{% endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+{{ "yes" if found.length else "" }}
+{%- endmacro -%}
+
+{#- ================================================================= files -#}
+
+{%- file packagePath + "/package-info.java" -%}
+{{ javadoc(api, "", "") }}package {{ basePackage }};
+{% endfile -%}
+
+{%- file packagePath + "/NotImplementedException.java" -%}
+package {{ basePackage }};
+
+/**
+ * Thrown by an operation that the problem instance has to provide, but whose
+ * implementation is still missing.
+ */
+public class NotImplementedException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+
+    public NotImplementedException(final String message) {
+        super(message);
+    }
+}
+{% endfile -%}
+
+{%- for c in api.getEClassifiers() -%}{%- if isEClass(c) -%}
+{%- set needsProblem = [] -%}
+{%- for op in c.getEOperations() %}{% if featuresOf(op).length > 0 %}{% set _ = needsProblem.push(op) %}{% endif %}{% endfor -%}
+{%- set hasGetProblem = [] -%}
+{%- for op in c.getEOperations() %}{% if op.getName() == "getProblem" %}{% set _ = hasGetProblem.push(op) %}{% endif %}{% endfor -%}
+{%- set isProblem = c.getName() == problemClass -%}
+{%- set needsSet = isProblem -%}
+{%- set usesOptional = uses(c, "Optional") == "yes" -%}
+{%- set usesStream = uses(c, "Stream") == "yes" -%}
+{%- file packagePath + "/" + c.getName() + ".java" -%}
+package {{ basePackage }};
+
+{% if usesOptional %}import java.util.Optional;
+{% endif %}{% if needsSet %}import java.util.Set;
+{% endif %}{% if usesStream %}import java.util.stream.Stream;
+{% endif %}{% if usesOptional or usesStream or needsSet %}
+{% endif %}{{ javadoc(c, "", "") }}public interface {{ c.getName() }}{% if c.getESuperTypes().size() > 0 %} extends {% for s in c.getESuperTypes() %}{{ s.getName() }}{{ ", " if not loop.last }}{% endfor %}{% endif %} {
+{%- if isProblem %}
+
+    /**
+     * The names of the features this problem instance provides.
+     */
+    public default Set<String> getFeatures() {
+        throw new NotImplementedException("getFeatures() is not yet implemented.");
+    }
+{%- endif %}
+{%- if needsProblem.length > 0 and not isProblem and hasGetProblem.length == 0 %}
+
+    /**
+     * The problem instance this object was created for.
+     */
+    public default {{ problemClass }} getProblem() {
+        throw new NotImplementedException("getProblem() is not yet implemented.");
+    }
+{%- endif %}
+{%- for op in c.getEOperations() %}
+
+{{ operation(c, op) }}
+{%- endfor %}
+}
+{% endfile -%}
+{%- endif -%}{%- endfor -%}

@@ -1,0 +1,25 @@
+namespace RoarNetAPI
+
+// Variability of the ROAR-NET API, derived from the feature annotations in api-v2.ecore.
+features
+    RoarNetAPI {abstract}
+        optional
+            SolutionCreation {abstract}
+                optional
+                    constructive
+                    heuristic
+            SearchStrategy {abstract}
+                optional
+                    local
+                    enumerable // Still need a better name
+                    destructive
+                    "is-reversible" // Still need a better name
+            SearchSpaceConstraint {abstract}
+                optional
+                    bounded // Still need a better name
+            "improved-ov-calculation" // Still need a better name
+
+constraints
+    destructive => constructive
+    bounded => constructive
+    "is-reversible" => constructive

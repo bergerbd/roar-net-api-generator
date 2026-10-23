@@ -1,0 +1,30 @@
+{
+  "name": "roar-net-api-generator-monorepo",
+  "private": true,
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@12.4.1",
+  "engines": {
+    "node": "^24.0.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.0.0",
+      "onFail": "error"
+    }
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "watch": "pnpm --filter roar-net-api-generator watch",
+    "verify": "pnpm -r verify",
+    "test": "pnpm -r test:unit",
+    "package": "pnpm --filter roar-net-api-generator package",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm --filter roar-net-api-generator release"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3"
+  }
+}

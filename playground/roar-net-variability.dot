@@ -1,0 +1,13 @@
+digraph FeatureModel {
+rankdir="TB"
+newrank=true
+bgcolor="#1e1e1e"
+edge [color=white]
+node [style=filled fontcolor="white" fontname="Arial Unicode MS, Arial"];
+
+X [fillcolor="#ABACEA" tooltip="Cardinality: None" shape="box"]
+Algorithm -> X [arrowhead="none", arrowtail="odot", dir="both"]
+Y [fillcolor="#ABACEA" tooltip="Cardinality: None" shape="box"]
+Algorithm -> Y [arrowhead="none", arrowtail="odot", dir="both"]
+Algorithm [fillcolor="#ABACEA" tooltip="Cardinality: None" shape="invhouse"]
+}

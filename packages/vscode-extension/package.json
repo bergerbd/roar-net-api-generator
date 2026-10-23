@@ -1,0 +1,113 @@
+{
+  "name": "roar-net-api-generator",
+  "displayName": "ROAR-NET API Generator",
+  "description": "Generator for the ROAR-NET API",
+  "version": "0.0.1",
+  "publisher": "bergerbd",
+  "preview": true,
+  "icon": "images/icon.png",
+  "private": true,
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "roar-net",
+    "optimisation",
+    "optimization",
+    "metaheuristics",
+    "code generator",
+    "code generation",
+    "api",
+    "model-driven engineering",
+    "mde",
+    "ecore",
+    "emf",
+    "uvl",
+    "variability",
+    "feature model",
+    "software product lines",
+    "nunjucks",
+    "templates",
+    "typemf"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bergerbd/roar-net-api-generator.git",
+    "directory": "packages/vscode-extension"
+  },
+  "extensionDependencies": [
+    "typemf.instance-editor"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "jsonValidation": [
+      {
+        "fileMatch": "roar-net.config.json",
+        "url": "./schemas/project-config.schema.json"
+      }
+    ],
+    "customEditors": [
+      {
+        "viewType": "roarNetGenerator.projectConfig",
+        "displayName": "ROAR-NET Project Configuration",
+        "selector": [
+          {
+            "filenamePattern": "roar-net.config.json"
+          }
+        ],
+        "priority": "default"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src webview-ui test --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:update-golden": "UPDATE_GOLDEN=1 vitest run test/e2e",
+    "compile-tests": "tsc -p tsconfig.test.json",
+    "test:integration": "pnpm run build && pnpm run compile-tests && node ./out-test/test/integration/runTest.js",
+    "vscode:prepublish": "node esbuild.js --production",
+    "package": "vsce package --no-dependencies",
+    "release": "vsce publish --no-dependencies --skip-duplicate",
+    "verify": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test:unit",
+    "generate-models": "typemf-generate models/mapping.typemf-generator.config.json && typemf-generate models/variability.typemf-generator.config.json"
+  },
+  "packageManager": "pnpm@12.4.1",
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@typemf/generator": "^0.10.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.14.0",
+    "@types/nunjucks": "^3.2.6",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^2.4.0",
+    "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.23.0",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "glob": "^11.0.0",
+    "mocha": "^10.7.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^2.0.0"
+  },
+  "dependencies": {
+    "@typemf/core": "^0.10.0",
+    "@typemf/json": "^0.10.0",
+    "@typemf/node": "^0.10.0",
+    "@typemf/xmi": "^0.10.0",
+    "nunjucks": "^3.2.4",
+    "uvl-parser": "^0.5.0"
+  }
+}

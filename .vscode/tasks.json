@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "watch-generator",
+      "type": "shell",
+      "command": "pnpm watch",
+      "options": {
+        "cwd": "${workspaceFolder}/packages/vscode-extension"
+      },
+      "isBackground": true,
+      // esbuild.js prints "[watch] build started/finished" for this matcher
+      "problemMatcher": "$esbuild-watch",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

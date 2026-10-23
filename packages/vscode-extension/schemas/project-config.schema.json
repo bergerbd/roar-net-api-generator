@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ROAR-NET API Generator Configuration",
+  "type": "object",
+  "required": [
+    "api-model",
+    "variability-model",
+    "mapping-model",
+    "templates",
+    "output-folder"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "api-model": {
+      "type": "string",
+      "description": "Path of the API ecore model."
+    },
+    "variability-model": {
+      "type": "string",
+      "description": "Path to the varibility model."
+    },
+    "mapping-model": {
+      "type": "string",
+      "description": "Path to the mapping model."
+    },
+    "templates": {
+      "type": "array",
+      "description": "List of the templates to use.",
+      "items": {
+        "type": "object",
+        "required": ["template", "folder"],
+        "additionalProperties": false,
+        "properties": {
+          "template": {
+            "type": "string",
+            "description": "Template name."
+          },
+          "folder": {
+            "type": "string",
+            "description": "Path of the template folder."
+          },
+          "options": {
+            "type": "object",
+            "description": "Template-specific options."
+          }
+        }
+      }
+    },
+    "output-folder": {
+      "type": "string",
+      "description": "Target folder for the generator.."
+    }
+  }
+}

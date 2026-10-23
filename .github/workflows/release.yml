@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {} # manual retry, e.g. after a failed Marketplace upload
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the "Version Packages" branch
+  pull-requests: write # open/update the "Version Packages" PR
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+
+      # With pending changesets: opens or updates the "Version Packages" PR.
+      # Without: runs `pnpm release`, which publishes the extension to the VS Code Marketplace.
+      # The extension is not published to npm; `--skip-duplicate` makes the publish a no-op when
+      # the current version is already on the Marketplace, so it is safe on every push to main.
+      - uses: changesets/action@v1
+        with:
+          publish: pnpm release
+          title: Version Packages
+          commit: Version Packages
+          createGithubReleases: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}

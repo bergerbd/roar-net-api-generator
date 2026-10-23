@@ -1,0 +1,23 @@
+# Operations
+
+- [create](./create.md): `create(API) : Problem`
+- [empty\_solution](./empty_solution.md): `empty_solution(Problem) : Solution`
+- [heuristic\_solution](./heuristic_solution.md): `heuristic_solution(Problem) : Solution`
+- [random\_solution](./random_solution.md): `random_solution(Problem) : Solution`
+- [construction\_neighbourhood](./construction_neighbourhood.md): `construction_neighbourhood(Problem) : Neighbourhood`
+- [destruction\_neighbourhood](./destruction_neighbourhood.md): `destruction_neighbourhood(Problem) : Neighbourhood`
+- [local\_neighbourhood](./local_neighbourhood.md): `local_neighbourhood(Problem) : Neighbourhood`
+- [copy](./copy.md): `copy(Solution) : Solution`
+- [is\_feasible](./is_feasible.md): `is_feasible(Solution) : bool`
+- [lower\_bound](./lower_bound.md): `lower_bound(Solution) : double`
+- [objective\_value](./objective_value.md): `objective_value(Solution) : double`
+- [get\_problem (Solution)](./get_problem_solution.md): `get_problem(Solution) : Problem`
+- [moves](./moves.md): `moves(Neighbourhood, Solution) : Move[0..*]`
+- [random\_move](./random_move.md): `random_move(Neighbourhood, Solution) : Move[0..1]`
+- [random\_moves\_without\_replacement](./random_moves_without_replacement.md): `random_moves_without_replacement(Neighbourhood, Solution) : Move[0..*]`
+- [get\_problem (Neighbourhood)](./get_problem_neighbourhood.md): `get_problem(Neighbourhood) : Problem`
+- [apply](./apply.md): `apply(Move, Solution) : Solution`
+- [revert](./revert.md): `revert(Move, Solution) : Solution`
+- [lower\_bound\_increment](./lower_bound_increment.md): `lower_bound_increment(Move, Solution) : double`
+- [objective\_value\_increment](./objective_value_increment.md): `objective_value_increment(Move, Solution) : double`
+- [get\_neighbourhood](./get_neighbourhood.md): `get_neighbourhood(Move) : Neighbourhood`

@@ -1,0 +1,240 @@
+{#-
+  Markdown documentation in the layout of the ROAR-NET API specification
+  (https://github.com/roar-net/roar-net-api-spec/tree/main/src):
+
+    README.md, SUMMARY.md       introduction (package documentation), table of contents
+    types/README.md, types/*.md one page per class
+    operations/README.md, operations/*.md
+                                one page per operation; the model documentation already
+                                contains "## Pre-requisites" / "## Use cases" sections
+    features.md                 feature tree and the operations of each feature
+
+  Documentation from the model is copied verbatim (Markdown and HTML kept); only
+  the leading "*" line of the Javadoc-style comments is removed.
+-#}
+
+{#- ---------------------------------------------------------------- naming -#}
+
+{%- macro snake(name) -%}
+{{ name | replace(r/([a-z0-9])([A-Z])/g, "$1_$2") | lower }}
+{%- endmacro -%}
+
+{%- macro words(name) -%}
+{{ (snake(name) | string) | replace("_", " ") | capitalize }}
+{%- endmacro -%}
+
+{#- Operation names that occur in more than one class get the class appended. -#}
+{%- set classes = [] -%}
+{%- set operationNames = [] -%}
+{%- for c in api.getEClassifiers() -%}
+  {%- if isEClass(c) -%}
+    {%- set _ = classes.push(c) -%}
+    {%- for op in c.getEOperations() %}{% set _ = operationNames.push(op.getName()) %}{% endfor -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- macro isAmbiguous(op) -%}
+{{ (operationNames | select("equalto", op.getName()) | length) > 1 }}
+{%- endmacro -%}
+
+{%- macro opFile(op) -%}
+{{ snake(op.getName()) }}{% if isAmbiguous(op) == "true" %}_{{ snake(op.getEContainingClass().getName()) }}{% endif %}.md
+{%- endmacro -%}
+
+{%- macro opLabel(op) -%}
+{{ snake(op.getName()) | replace("_", "\\_") }}{% if isAmbiguous(op) == "true" %} ({{ op.getEContainingClass().getName() }}){% endif %}
+{%- endmacro -%}
+
+{%- macro opTitle(op) -%}
+{{ words(op.getName()) }}{% if isAmbiguous(op) == "true" %} ({{ op.getEContainingClass().getName() }}){% endif %}
+{%- endmacro -%}
+
+{#- ------------------------------------------------------------- signatures -#}
+
+{%- set primitives = {
+  "EDouble": "double", "EFloat": "float", "EInt": "int", "ELong": "long",
+  "EBoolean": "bool", "EString": "string"
+} -%}
+
+{%- macro typeName(type) -%}
+{{ primitives[type.getName()] or type.getName() }}
+{%- endmacro -%}
+
+{%- macro multiplicity(typed) -%}
+{%- if typed.getLowerBound() != 1 or typed.getUpperBound() != 1 -%}
+[{{ typed.getLowerBound() }}..{{ "*" if typed.getUpperBound() == -1 else typed.getUpperBound() }}]
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro signature(op) -%}
+{{ snake(op.getName()) }}({{ op.getEContainingClass().getName() }}
+{%- for p in op.getEParameters() %}, {{ typeName(p.getEType()) }}{{ multiplicity(p) }}{% endfor -%}
+){% if op.getEType() %} : {{ typeName(op.getEType()) }}{{ multiplicity(op) }}{% endif %}
+{%- endmacro -%}
+
+{%- macro doc(element) -%}
+{{ (documentation(element) or "") | replace(r/^\*\r?\n/, "") | trim }}
+{%- endmacro -%}
+
+{#- Links to the classes used in an operation's signature. -#}
+{%- macro seeAlsoTypes(op, prefix) -%}
+{%- set seen = [] -%}
+{%- set _ = seen.push(op.getEContainingClass()) -%}
+{%- for p in op.getEParameters() %}{% if isEClass(p.getEType()) and not (p.getEType() in seen) %}{% set _ = seen.push(p.getEType()) %}{% endif %}{% endfor -%}
+{%- if op.getEType() and isEClass(op.getEType()) and not (op.getEType() in seen) %}{% set _ = seen.push(op.getEType()) %}{% endif -%}
+{%- for t in seen %}[{{ t.getName() }}]({{ prefix }}{{ t.getName() }}.md){{ "," if not loop.last else "." }}
+{% endfor -%}
+{%- endmacro -%}
+
+{%- macro featureLinks(features, prefix) -%}
+{%- for f in features %}[{{ f.getName() }}]({{ prefix }}features.md#{{ f.getName() | lower }}){{ ", " if not loop.last }}{% endfor -%}
+{%- endmacro -%}
+
+{#- ================================================================= pages -#}
+
+{%- file "README.md" -%}
+# Introduction
+
+{{ doc(api) }}
+{% endfile -%}
+
+{%- file "SUMMARY.md" -%}
+# Summary
+
+- [Introduction](./README.md)
+- [Types](./types/README.md)
+{%- for c in classes %}
+  - [{{ c.getName() }}](./types/{{ c.getName() }}.md)
+{%- endfor %}
+- [Operations](./operations/README.md)
+{%- for c in classes %}{% for op in c.getEOperations() %}
+  - [{{ opLabel(op) }}](./operations/{{ opFile(op) }})
+{%- endfor %}{% endfor %}
+- [Features](./features.md)
+{% endfile -%}
+
+{%- file "types/README.md" -%}
+# Types
+
+The types to be defined by the user in this specification are:
+{% for c in classes %}
+- [{{ c.getName() }}](./{{ c.getName() }}.md)
+{%- endfor %}
+{% endfile -%}
+
+{%- for c in classes -%}
+{%- file "types/" + c.getName() + ".md" -%}
+# {{ c.getName() }}
+
+## Signature
+
+```text
+{{ c.getName() }}
+```
+{%- if documentation(c) %}
+
+## Description
+
+{{ doc(c) }}
+{%- endif %}
+{%- if c.getEOperations().size() > 0 %}
+
+## Operations
+{% for op in c.getEOperations() %}
+- [{{ opLabel(op) }}](../operations/{{ opFile(op) }}): `{{ signature(op) }}`
+{%- endfor %}
+{%- endif %}
+{%- set features = [] -%}
+{%- for op in c.getEOperations() %}{% for f in featuresOf(op) %}{% if not (f in features) %}{% set _ = features.push(f) %}{% endif %}{% endfor %}{% endfor %}
+{%- if features.length > 0 %}
+
+## Features
+
+Operations of this type belong to: {{ featureLinks(features, "../") }}.
+{%- endif %}
+{% endfile -%}
+{%- endfor -%}
+
+{%- file "operations/README.md" -%}
+# Operations
+{% for c in classes %}{% for op in c.getEOperations() %}
+- [{{ opLabel(op) }}](./{{ opFile(op) }}): `{{ signature(op) }}`
+{%- endfor %}{% endfor %}
+{% endfile -%}
+
+{%- for c in classes -%}{%- for op in c.getEOperations() -%}
+{%- file "operations/" + opFile(op) -%}
+# {{ opTitle(op) }}
+
+## Signature
+
+```text
+{{ signature(op) }}
+```
+{%- if documentation(op) %}
+
+## Description
+
+{{ doc(op) }}
+{%- endif %}
+
+## Features
+
+{% if featuresOf(op).length > 0 -%}
+This operation belongs to: {{ featureLinks(featuresOf(op), "../") }}.
+{%- else -%}
+This operation does not belong to a feature; every implementation provides it.
+{%- endif %}
+
+## See also
+
+{{ seeAlsoTypes(op, "../types/") | trim }}
+{% endfile -%}
+{%- endfor -%}{%- endfor -%}
+
+{#- --------------------------------------------------------------- features -#}
+
+{%- macro featureTree(feature, depth) -%}
+{{ "  ".repeat(depth) }}- [{{ feature.getName() }}](#{{ feature.getName() | lower }})
+{%- for g in feature.getGroups() %}
+{{ "  ".repeat(depth + 1) }}- *{{ g.getKind() }}*
+{%- for child in g.getFeatures() %}
+{{ featureTree(child, depth + 2) }}
+{%- endfor %}
+{%- endfor %}
+{%- endmacro -%}
+
+{%- macro featureSections(feature) %}
+### {{ feature.getName() }}
+{% if feature.getParent() %}
+*{{ feature.getParent().getKind() | capitalize }}* sub-feature of [{{ feature.getParent().getParent().getName() }}](#{{ feature.getParent().getParent().getName() | lower }}).
+{% endif %}
+{%- if elementsOf(feature).length > 0 %}
+Operations:
+{% for op in elementsOf(feature) %}
+- [{{ opLabel(op) }}](./operations/{{ opFile(op) }}): `{{ signature(op) }}`
+{%- endfor %}
+{% elif feature.getGroups().size() == 0 %}
+No operations are mapped to this feature.
+{% endif %}
+{%- for g in feature.getGroups() %}{% for child in g.getFeatures() %}{{ featureSections(child) }}{% endfor %}{% endfor %}
+{%- endmacro -%}
+
+{%- file "features.md" -%}
+# Features
+
+The API is variable: an implementation provides only the operations of the
+features it supports. Operations that belong to no feature are provided by
+every implementation.
+
+## Feature tree
+
+{{ featureTree(variability.getRoot(), 0) }}
+
+## Features
+{{ featureSections(variability.getRoot()) }}
+## Operations of every implementation
+{% for c in classes %}{% for op in c.getEOperations() %}{% if featuresOf(op).length == 0 %}
+- [{{ opLabel(op) }}](./operations/{{ opFile(op) }}): `{{ signature(op) }}`
+{%- endif %}{% endfor %}{% endfor %}
+{% endfile -%}

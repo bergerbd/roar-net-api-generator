@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="variability" nsURI="http://roar-net.com/variability" nsPrefix="var">
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureModel">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="root" eType="#//Feature" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Feature">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//FeatureType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="groups" eType="#//Group" upperBound="-1" containment="true" eOpposite="#//Group/parent"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//Group" eOpposite="#//Group/features"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FeatureType">
+    <eLiterals name="BOOLEAN" value="0" literal="Boolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Group">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" eType="#//GroupKind"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//Feature" eOpposite="#//Feature/groups"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="features" eType="#//Feature" upperBound="-1" containment="true" eOpposite="#//Feature/parent"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="GroupKind">
+    <eLiterals name="MANDATORY" value="0" literal="mandatory"/>
+    <eLiterals name="OPTIONAL" value="1" literal="optional"/>
+    <eLiterals name="OR" value="2" literal="or"/>
+    <eLiterals name="ALTERNATIVE" value="3" literal="alternative"/>
+    <eLiterals name="CARDINALITY" value="4" literal="cardinality"/>
+  </eClassifiers>
+</ecore:EPackage>

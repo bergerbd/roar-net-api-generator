@@ -1,0 +1,224 @@
+{
+  "$namespaces": {
+    "map": "http://roar-net.com/mapping",
+    "ecore": "http://www.eclipse.org/emf/2002/Ecore"
+  },
+  "$roots": [
+    {
+      "$eClass": {
+        "namespace": "map",
+        "name": "MappingModel"
+      },
+      "mappings": [
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Problem/emptySolution",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_constructive"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Problem/heuristicSolution",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_heuristic"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Problem/randomSolution",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_heuristic"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Problem/constructionNeighbourhood",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_constructive"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Problem/destructionNeighbourhood",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_destructive"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Problem/localNeighbourhood",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_local"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Solution/isFeasible",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_constructive"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Solution/lowerBound",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_bounded"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Neighbourhood/moves",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_enumerable"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Neighbourhood/randomMovesWithoutReplacement",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_enumerable"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Move/revert",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_is-reversible"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Move/lowerBoundIncrement",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_bounded"
+          }
+        },
+        {
+          "$eClass": {
+            "namespace": "map",
+            "name": "Mapping"
+          },
+          "ecore": {
+            "$ref": "roar-net-api.ecore#//Move/objectiveValueIncrement",
+            "$eClass": {
+              "namespace": "ecore",
+              "name": "EOperation"
+            }
+          },
+          "variability": {
+            "$ref": "roar-net-variability.uvl#Feature_improved-ov-calculation"
+          }
+        }
+      ]
+    }
+  ]
+}

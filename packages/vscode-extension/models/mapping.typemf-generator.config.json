@@ -1,0 +1,8 @@
+{
+  "ecoreFile": "./mapping.ecore",
+  "outputDir": "../src/core/model/mapping",
+  "templateSet": "typescript",
+  "options": {
+    "package-imports": { "http://roar-net.com/variability": "../variability" }
+  }
+}

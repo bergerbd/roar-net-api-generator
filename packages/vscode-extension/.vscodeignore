@@ -1,0 +1,11 @@
+# Everything is bundled into dist/ by esbuild; ship only what the extension needs at runtime.
+**
+!dist/extension.js
+!dist/webview/main.js
+!dist/webview/main.css
+!schemas/**
+!package.json
+!README.md
+!CHANGELOG.md
+!LICENSE
+!images/icon.png

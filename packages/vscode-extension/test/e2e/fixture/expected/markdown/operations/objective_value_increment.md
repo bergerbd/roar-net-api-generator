@@ -1,0 +1,39 @@
+# Objective value increment
+
+## Signature
+
+```text
+objective_value_increment(Move, Solution) : double
+```
+
+## Description
+
+This function produces the difference between the value of the objective function at the
+  solution that would be obtained by applying the given move to the given solution and the
+  corresponding value at the given solution. If either solution is infeasible, the
+  objective-value increment is undefined, and this function produces no value.
+
+It is assumed that the objective function is to be minimised.
+
+## Pre-requisites
+The given move must have been generated under some neighbourhood structure for the given
+  solution or a pristine copy of it.
+
+## Use cases
+The objective-value increment provides a measure of move quality, especially in local-search
+  algorithms, but also in constructive search algorithms.
+
+Determining the objective-value increment can often be performed faster than applying a move
+  to a solution and computing the difference between the two objective values. This avoids
+  spending time applying moves to solutions that will be discarded immediately, and motivates
+  further investment in efficient objective-value increment evaluation, even if at the expense
+  of some additional processing when moves are applied to solutions.
+
+## Features
+
+This operation belongs to: [improved-ov-calculation](../features.md#improved-ov-calculation).
+
+## See also
+
+[Move](../types/Move.md),
+[Solution](../types/Solution.md).

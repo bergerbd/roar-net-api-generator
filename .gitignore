@@ -1,0 +1,12 @@
+# Dependencies and the pnpm content-addressable store
+node_modules/
+.pnpm-store/
+
+# Build and test output
+dist/
+out/
+out-test/
+*.vsix
+
+# Generator output in the playground
+playground/generated/

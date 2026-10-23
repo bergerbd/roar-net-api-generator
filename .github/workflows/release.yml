@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {} # manual retry, e.g. after a failed Marketplace upload
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the "Version Packages" branch
+  pull-requests: write # open/update the "Version Packages" PR
+  id-token: write # OIDC token for the Azure login (federated credential, no PAT)
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # The federated credential and the AZURE_* secrets are bound to this environment.
+    environment: marketplace-publish
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+
+      # Signs in the Entra ID app with the federated credential for this repository; `vsce publish
+      # --azure-credential` then authenticates through this Azure CLI session. The app has no
+      # subscription, it only has to be a member of the Marketplace publisher.
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+
+      # With pending changesets: opens or updates the "Version Packages" PR.
+      # Without: runs `pnpm release`, which publishes the extension to the VS Code Marketplace.
+      # The extension is not published to npm; `--skip-duplicate` makes the publish a no-op when
+      # the current version is already on the Marketplace, so it is safe on every push to main.
+      - uses: changesets/action@v1
+        with:
+          publish: pnpm release
+          title: Version Packages
+          commit: Version Packages
+          createGithubReleases: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

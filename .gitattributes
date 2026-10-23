@@ -1,0 +1,6 @@
+# Keep LF everywhere: the end-to-end test compares generated files byte for byte with the golden
+# copy, and the repository is checked out on macOS/Windows hosts.
+* text=auto eol=lf
+
+*.png binary
+*.vsix binary

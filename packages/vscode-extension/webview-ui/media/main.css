@@ -1,0 +1,58 @@
+body {
+  font-family: var(--vscode-font-family);
+  color: var(--vscode-foreground);
+  padding: 1rem 1.5rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.row label {
+  width: 10rem;
+  flex-shrink: 0;
+}
+
+.row input,
+.row textarea {
+  flex: 1;
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border, transparent);
+  padding: 0.25rem 0.4rem;
+  font-family: var(--vscode-editor-font-family);
+}
+
+textarea.invalid {
+  outline: 1px solid var(--vscode-inputValidation-errorBorder);
+}
+
+button {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--vscode-button-hoverBackground);
+}
+
+button.danger {
+  background: var(--vscode-errorForeground);
+  margin-top: 0.5rem;
+}
+
+fieldset.template {
+  border: 1px solid var(--vscode-panel-border);
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+}
+
+h3 {
+  margin-top: 1.5rem;
+}

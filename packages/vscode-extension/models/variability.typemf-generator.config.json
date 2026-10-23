@@ -1,0 +1,6 @@
+{
+  "ecoreFile": "./variability.ecore",
+  "outputDir": "../src/core/model/variability",
+  "templateSet": "typescript",
+  "options": {}
+}

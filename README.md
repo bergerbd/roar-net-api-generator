@@ -37,6 +37,11 @@ Every user-facing change comes with a changeset (`pnpm changeset`). On `main`, t
 pending changesets into a "Version Packages" pull request; merging it bumps the version, updates the changelog
 and publishes the extension to the VS Code Marketplace (secret `VSCE_PAT`). Nothing is published to npm.
 
+## Acknowledgement
+
+Supported by [COST Action CA22137](https://www.cost.eu/actions/CA22137/) "Randomised Optimisation Algorithms
+Research Network" ([ROAR-NET](https://roar-net.eu/)), funded by COST (European Cooperation in Science and Technology).
+
 ## License
 
 [Apache-2.0](LICENSE)

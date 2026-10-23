@@ -157,7 +157,8 @@ the mapping file; features are addressed by name as `<file>.uvl#Feature_<name>`:
 ## About
 
 The generator is developed in the context of [ROAR-NET](https://roar-net.eu/), the COST Action
-[CA22137](https://www.cost.eu/actions/CA22137/) "Randomised Optimisation Algorithms Research Network".
+[CA22137](https://www.cost.eu/actions/CA22137/) "Randomised Optimisation Algorithms Research Network". It is
+supported by COST Action CA22137, funded by COST (European Cooperation in Science and Technology).
 
 Issues and contributions are welcome on [GitHub](https://github.com/bergerbd/roar-net-api-generator).
 
